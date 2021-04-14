@@ -1,9 +1,9 @@
 function(){
   tabPanel("Background",
 
-           img(src = "IDEM_logo.png", height = 250),
+           img(src = "IEPA_logo.png", height = 175),
            includeHTML("App_Background.html"),
-           img(src = "IDEM_Bug_IBI.png", height = 1000)
+           img(src = "IL_Lakes_IBIClasses.png", height = 800)
 
   ) #tabPanel ~END
 }##FUNCTION~END

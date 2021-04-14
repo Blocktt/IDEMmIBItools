@@ -47,13 +47,13 @@ INDEX_NAME
 text
 </td>
 <td style="text-align:left;">
-IDEM_2017_Bugs or IDEM_2017_Fish
+IEPA_2021_Bugs
 </td>
 <td style="text-align:left;">
 No
 </td>
 <td style="text-align:left;">
-Only two allowable entries (IDEM_2017_Bugs or IDEM_2017_Fish).
+Only one allowable entry (IDEM_2017_Bugs or IDEM_2017_Fish).
 </td>
 </tr>
 <tr>
@@ -64,18 +64,18 @@ INDEX_REGION
 text
 </td>
 <td style="text-align:left;">
-Bugs_N, Bugs_NC, Bugs_SW, Bugs_SE, Fish_WS, Fish_WL, Fish_BL, Fish_BH
+North, Central, South
 </td>
 <td style="text-align:left;">
 No
 </td>
 <td style="text-align:left;">
-Must match one of the five allowable entries (which tells the R code which IBI to apply to each sample).
+Must match one of the three allowable entries (which tells the R code which IBI to apply to each sample).
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-STATIONID
+LAKECODE
 </td>
 <td style="text-align:left;">
 text
@@ -189,7 +189,7 @@ NA
 No
 </td>
 <td style="text-align:left;">
-Taxonomic identification of organisms in each sample. See <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">TaxaTranslator table</a>.
+Taxonomic identification of organisms in each sample.
 </td>
 </tr>
 <tr>
@@ -223,7 +223,7 @@ TRUE, FALSE
 No
 </td>
 <td style="text-align:left;">
-Redundant (non-distinct) taxa should marked “TRUE”. Criteria for designating redundant taxa should be consistent with the <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">ExcludeDecisionCriteria document</a>.
+Redundant (non-distinct) taxa should marked “TRUE”.
 </td>
 </tr>
 <tr>
@@ -240,7 +240,7 @@ TRUE, FALSE
 No
 </td>
 <td style="text-align:left;">
-Non-target taxa should be marked “TRUE”. Designations should match with those in the <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">Taxa Attribute tables</a>.
+Non-target taxa should be marked “TRUE”.
 </td>
 </tr>
 <tr>
@@ -291,7 +291,7 @@ NA
 Yes
 </td>
 <td style="text-align:left;">
-Several IBI metrics are based on Order (e.g., % EPT taxa). Entries should be consistent with the phylogeny in the <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">Taxa Attribute tables</a>.
+Several IBI metrics are based on Order (e.g., ECT taxa richness).
 </td>
 </tr>
 <tr>
@@ -308,7 +308,7 @@ NA
 Yes
 </td>
 <td style="text-align:left;">
-Entries should be consistent with the phylogeny in the <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">Taxa Attribute tables</a>.
+Entries should be consistent with the phylogeny.
 </td>
 </tr>
 <tr>
@@ -370,13 +370,13 @@ FFG
 text
 </td>
 <td style="text-align:left;">
-CG, CF, PR, SC, SH (select one)
+CG, CF, PR, SC, SH (select mutiple)
 </td>
 <td style="text-align:left;">
 Yes
 </td>
 <td style="text-align:left;">
-Primary Functional Feeding Group. Choose from, can have multiple entries separated by comma: collector-gatherer (CG), collector-filterer (CF), predator (PR), scraper (SC), or shredder (SH). FFG trait assignments should match with those in the <a href="https://github.com/Blocktt/IDEMtools/tree/main/Data_Prep">Taxa Attribute tables</a>.
+Primary Functional Feeding Group. Choose from, can have multiple entries separated by comma: collector-gatherer (CG), collector-filterer (CF), predator (PR), scraper (SC), or shredder (SH).
 </td>
 </tr>
 <tr>
@@ -398,19 +398,19 @@ Taxa with tolerance values ranging from 0 to 3 are considered ‘intolerant’ t
 </tr>
 <tr>
 <td style="text-align:left;">
-LIFE_CYCLE
+HABIT
 </td>
 <td style="text-align:left;">
 text
 </td>
 <td style="text-align:left;">
-uni, semi, multi (select one)
+SW, CN, SP, CB, BU (select multiple)
 </td>
 <td style="text-align:left;">
 Yes
 </td>
 <td style="text-align:left;">
-Number of broods or generations of an organism in a year (also referred to as ‘voltinism’): univoltine (UNI), semivoltine (SEMI), or multivoltine (MULTI).
+Priamry insect habits. Choose from, can have multiple entries separated by comma: Swimmers (SW), Clingers (CN), Sprawlers (SP), Climbers (CB), Burrowers (BU)
 </td>
 </tr>
 </tbody>

@@ -32,9 +32,9 @@ function(){
                )##fileInput~END
                #, tags$hr()
                , h4("2. Calculate IBI")
-               , selectInput("MMI", "Select an IBI to calculate:",
-                             choices=MMIs)
-               , h5("IDEM Bug or Fish IBI - specified in INDEX_REGION field of input")
+               # , selectInput("MMI", "Select an IBI to calculate:",
+               #               choices=MMIs)
+               , h5("IEPA Bug IEPA - Specify Site Class in INDEX_REGION field")
                , actionButton("b_Calc", "Calculate Metric Values and Scores")
                , tags$hr()
                , h4("3. Download Results")

@@ -43,7 +43,7 @@ library(kableExtra)
 # state directories
 table.dir <- "tables"
 table.file <- "Instruction_Tables.xlsx"
-tab1.dir <- "Bug_N"
+tab1.dir <- "Bug_Metrics"
 
 table1 <- read_excel(file.path(table.dir, table.file), sheet = tab1.dir
                      , na = c("NA", ""), trim_ws = TRUE, skip = 0

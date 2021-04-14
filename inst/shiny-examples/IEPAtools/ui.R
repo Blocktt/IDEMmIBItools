@@ -18,7 +18,7 @@ tab_DataExplorer <- source("external/tab_DataExplorer.R", local = TRUE)$value
 
 
 # Define UI
-shinyUI(navbarPage(theme = shinytheme("united"), "Illinois Lakes IBI Calculator v0.0.0.900"
+shinyUI(navbarPage(theme = shinytheme("cerulean"), "Illinois Lakes IBI Calculator v0.0.0.906"
                    ,tab_Background()
                    ,tab_Instructions()
                    ,tab_Calculator()

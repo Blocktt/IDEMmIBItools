@@ -1,7 +1,7 @@
 function(){
   tabPanel("Instructions",
 
-           img(src = "IDEM_logo.png", height = 250),
+           img(src = "IEPA_logo.png", height = 175),
            includeHTML("App_Instructions.html")
 
   ) #tabPanel ~END

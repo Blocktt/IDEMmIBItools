@@ -22,8 +22,8 @@ library(shinythemes)
 
 
 # Drop-down boxes
-MMIs <- c("IDEM_2017_Bugs", "IDEM_2017_Fish")
-Community <- c("bugs", "fish")
+MMIs <- c("IEPA_2021_Bugs")
+Community <- c("bugs")
 
 
 # File Size
@@ -33,48 +33,19 @@ options(shiny.maxRequestSize = 25*1024^2)
 
 # define which metrics michigan wants to keep in indices
 
-BugMetrics <- c("nt_total"
-                 ,"pi_EphemNoCaeBae"
-                 ,"pi_ffg_filt"
-                 ,"pi_ffg_shred"
-                 ,"pi_OET"
-                 ,"pi_Pleco"
-                 ,"pi_tv_intol"
-                 ,"pt_EPT"
-                 ,"pt_ffg_pred"
-                 ,"pt_NonIns"
-                 ,"pt_POET"
-                 ,"pt_tv_intol"
-                 ,"pt_tv_toler"
-                 ,"pt_volt_semi"
-                 ,"x_Becks")# END BugMetrics
-
-FishMetrics <- c("nt_total"
-                ,"pi_EphemNoCaeBae"
+BugMetrics <- c("nt_ECT"
+                ,"pi_Dipt"
                 ,"pi_ffg_filt"
-                ,"pi_ffg_shred"
-                ,"pi_OET"
-                ,"pi_Pleco"
-                ,"pi_tv_intol"
-                ,"pt_EPT"
-                ,"pt_ffg_pred"
-                ,"pt_NonIns"
-                ,"pt_POET"
-                ,"pt_tv_intol"
-                ,"pt_tv_toler"
-                ,"pt_volt_semi"
-                ,"x_Becks")# END FishMetrics
+                ,"nt_habit_climb"
+                ,"pi_tv_toler")# END BugMetrics
 
 #### GIS/Map data ####
 
 dir_data <- file.path(".","GIS_Data")
 
-## Indiana State Basins
-IN_StateBasins <- rgdal::readOGR(file.path(dir_data, "IN_StateBasins_20210113.shp"))
+## Illinois 2021 Bug IBI Site Classes
 
-## Indiana 2017 Bug IBI Site Classes
-
-IN_BugClasses <- rgdal::readOGR(file.path(dir_data, "IN_BugClasses_20210113.shp"))
+IL_BugClasses <- rgdal::readOGR(file.path(dir_data, "IEPA_SiteClasses.shp"))
 
 
 
