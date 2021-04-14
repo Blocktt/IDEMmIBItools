@@ -1,5 +1,5 @@
 Results Log from IEPAtools Shiny App
-2021-04-14 11:14:25
+2021-04-14 11:49:29
 file = IBI_input_LittoralABC_20210413.csv
 197taxa have the incorrect FFG descriptor, please use the following:
 Replace 'Collector' with 'CG'
@@ -21,8 +21,8 @@ Warning in eval(expr, env) :
    FFG2
    TOLVAL2
    HABITAT
-Warning: Error in : Can't subset columns that don't exist.
-x Column `nt_ECT` doesn't exist.
-  [No stack trace available]
+Chosen IBI from Shiny app = 
+Warning in sink() : no sink to remove
+
 
 
