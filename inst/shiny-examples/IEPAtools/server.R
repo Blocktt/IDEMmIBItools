@@ -393,7 +393,7 @@ shinyServer(function(input, output, session) {
                     , color = "green"
                     , weight = 3
                     , fill = FALSE
-                    , label = basins_shape$Site_Class
+                    , label = IL_BugClasses$Site_Class
                     , group = "Bug Site Classes"
 
         ) %>%
