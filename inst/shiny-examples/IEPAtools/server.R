@@ -368,27 +368,19 @@ shinyServer(function(input, output, session) {
       # subset data by Index_Region
 
       N_data <- df_data %>%
-        filter(INDEX_REGION == "North")
+        filter(INDEX_REGION == "NORTH")
 
       C_data <- df_data %>%
-        filter(INDEX_REGION == "Central")
+        filter(INDEX_REGION == "CENTRAL")
 
       S_data <- df_data %>%
-        filter(INDEX_REGION == "South")
+        filter(INDEX_REGION == "SOUTH")
 
 
       leaflet() %>%
         addTiles() %>%
         addProviderTiles("CartoDB.Positron", group="Positron") %>%
         addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") %>%
-        # addPolygons(data = IN_StateBasins
-        #             , color = "blue"
-        #             , weight = 5
-        #             , fill = FALSE
-        #             , label = IN_StateBasins$Monitoring
-        #             , group = "State Basins"
-        #
-        # ) %>%
         addPolygons(data = IL_BugClasses
                     , color = "green"
                     , weight = 3
@@ -438,8 +430,18 @@ shinyServer(function(input, output, session) {
         addLayersControl(overlayGroups = c("North", "Central", "South", "Bug Site Classes"),
                          baseGroups = c("OSM (default)", "Positron", "Toner Lite"),
                          options = layersControlOptions(collapsed = TRUE))%>%
-        hideGroup(c("Bug Site Classes")) %>%
-        addMiniMap(toggleDisplay = TRUE)
+        # hideGroup(c("Bug Site Classes")) %>%
+        addMiniMap(toggleDisplay = TRUE) %>%
+        onRender( # used for making download button https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
+          "function(el, x) {
+            L.easyPrint({
+              sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
+              filename: 'mymap',
+              exportOnly: true,
+              hideControlContainer: true
+            }).addTo(this);
+            }"
+        )
 
       }) ##renderLeaflet~END
 

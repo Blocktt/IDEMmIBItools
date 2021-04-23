@@ -17,7 +17,8 @@ function(){
              )##sidebarPanel.END
              , mainPanel(
                tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}")
-               , leafletOutput("mymap", height = "85vh")
+               ,tags$head(tags$script(src = jsfile))
+               ,leafletOutput("mymap", height = "85vh")
 
              )##mainPanel.END
            )#sidebarLayout.End

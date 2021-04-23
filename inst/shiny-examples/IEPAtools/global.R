@@ -19,6 +19,7 @@ library(shinyjs) # used for download button enable
 library(mapview) # used to download leaflet map
 library(stringr)
 library(shinythemes)
+library(htmlwidgets)
 
 
 # Drop-down boxes
@@ -42,6 +43,9 @@ BugMetrics <- c("nt_ECT"
 #### GIS/Map data ####
 
 dir_data <- file.path(".","GIS_Data")
+
+jsfile <- "https://rawgit.com/rowanwins/leaflet-easyPrint/gh-pages/dist/bundle.js"
+#https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
 
 ## Illinois 2021 Bug IBI Site Classes
 
