@@ -7,14 +7,12 @@
 #    http://shiny.rstudio.com/
 #
 
-# Define server logic required to draw a histogram
+# Define server logic
 shinyServer(function(input, output, session) {
 
-    # map and plots require df_metsc
+    # Misc Names ####
     map_data <- reactiveValues(df_metsc = NULL)
 
-
-    # Misc Names ####
     output$fn_input_display <- renderText({input$fn_input}) ## renderText~END
 
 
@@ -30,18 +28,21 @@ shinyServer(function(input, output, session) {
         inFile <- input$fn_input
 
         shiny::validate(
-            need(inFile != "", "Please upload a data set") # used to inform the user that a data set is required
-        )
+            need(inFile != "", "Please upload a data set")
+        ) # used to inform the user that a data set is required
 
         if (is.null(inFile)){
             return(NULL)
         }##IF~is.null~END
 
         # Read user imported file
-        df_input <- read.csv(inFile$datapath, header = TRUE,
-                             sep = input$sep, quote = input$quote, stringsAsFactors = FALSE)
+        df_input <- read.csv(inFile$datapath
+                             , header = TRUE
+                             , sep = input$sep
+                             , quote = input$quote
+                             , stringsAsFactors = FALSE)
 
-        required_columns <- c("INDEX_NAME"
+        required_columns <- c("INDEX_NAME" # Required input columns
                               ,"LAKECODE"
                               ,"COLLDATE"
                               ,"COLLMETH"
@@ -71,12 +72,14 @@ shinyServer(function(input, output, session) {
         col_missing <- required_columns[!col_req_match]
 
         shiny::validate(
-            need(all(required_columns %in% column_names), paste0("Error\nChoose correct data separator; otherwise, you may have missing required columns\n",
-                                                                 paste("Required columns missing from the data:\n")
-                                                                 , paste("* ", col_missing, collapse = "\n")))
+            need(all(required_columns %in% column_names)
+                 , paste0("Error\nChoose correct data separator; otherwise, you may have missing required columns\n"
+                          , paste("Required columns missing from the data:\n")
+                          , paste("* ", col_missing, collapse = "\n")))
         )##END ~ validate() code
 
-        # MAP and PLOT Observer ####
+        # Map and Plot Observer ####
+        # Returns null until there is input field. Uses SAMPLEID for select input
         observe({
           inFile<- input$fn_input
           if(is.null(inFile))
@@ -84,7 +87,8 @@ shinyServer(function(input, output, session) {
 
           df_input
 
-          updateSelectInput(session, "siteid.select", choices = as.character(sort(unique(df_input[, "SAMPLEID"]))))
+          updateSelectInput(session, "siteid.select"
+                            , choices = as.character(sort(unique(df_input[, "SAMPLEID"]))))
         }) ## observe~END
 
         # Add "Results" folder if missing
@@ -121,7 +125,6 @@ shinyServer(function(input, output, session) {
             n_inc <- 7
 
             # sink output
-            #fn_sink <- file.path(".", "Results", "results_log.txt")
             file_sink <- file(file.path(".", "Results", "results_log.txt"), open = "wt")
             sink(file_sink, type = "output", append = TRUE)
             sink(file_sink, type = "message", append = TRUE)
@@ -182,10 +185,6 @@ shinyServer(function(input, output, session) {
                 message("NONTARGET field does not have any FALSE values. \n  Valid values are TRUE or FALSE.  \n  Other values are not recognized.")
             }##IF.Exclude.T.END
 
-
-            #appUser <- Sys.getenv('USERNAME')
-            # Not meaningful when run online via Shiny.io
-
             # Increment the progress bar, and update the detail text.
             incProgress(1/n_inc, detail = "Calculate, Metrics (takes ~ 30-45s)")
             Sys.sleep(0.5)
@@ -195,35 +194,34 @@ shinyServer(function(input, output, session) {
 
             # QC, Required Fields
             col.req <- c("SAMPLEID", "TAXAID", "N_TAXA", "EXCLUDE", "INDEX_NAME"
-                         , "INDEX_REGION", "NONTARGET", "PHYLUM", "SUBPHYLUM", "CLASS", "SUBCLASS"
-                         , "INFRAORDER", "ORDER", "FAMILY", "SUBFAMILY", "TRIBE", "GENUS"
-                         , "FFG", "HABIT", "LIFE_CYCLE", "TOLVAL", "BCG_ATTR", "THERMAL_INDICATOR"
+                         , "INDEX_REGION", "NONTARGET", "PHYLUM", "SUBPHYLUM"
+                         , "CLASS", "SUBCLASS", "INFRAORDER", "ORDER", "FAMILY"
+                         , "SUBFAMILY", "TRIBE", "GENUS", "FFG", "HABIT"
+                         , "LIFE_CYCLE", "TOLVAL", "BCG_ATTR", "THERMAL_INDICATOR"
                          , "LONGLIVED", "NOTEWORTHY", "FFG2", "TOLVAL2", "HABITAT")
             col.req.missing <- col.req[!(col.req %in% toupper(names(df_data)))]
 
             # Add missing fields
             df_data[,col.req.missing] <- NA
             warning(paste("Metrics related to the following fields are invalid:"
-                          , paste(paste0("   ", col.req.missing), collapse="\n"), sep="\n"))
+                          , paste(paste0("   ", col.req.missing), collapse="\n")
+                          , sep="\n"))
+
+            ## Metval Calc ####
 
             # calculate values and scores in two steps using BioMonTools
             # save each file separately
-
-            # create long name version of Index Regions for client comprehension
-
-            # df_data$INDEX_REGION_LONG <- ifelse(df_data$INDEX_REGION == "Bugs_N", "Northern",
-            #                                     ifelse(df_data$INDEX_REGION == "Bugs_NC", "North_Central",
-            #                                            ifelse(df_data$INDEX_REGION == "Bugs_SW", "Southwest",
-            #                                                   ifelse(df_data$INDEX_REGION == "Bugs_SE", "Southeast",
-            #                                                          "Unknown"))))
 
             # columns to keep
             keep_cols <- c("Lat", "Long", "LAKECODE", "COLLDATE", "COLLMETH")
 
 
             # metric calculation
-            df_metval <- suppressWarnings(metric.values(fun.DF = df_data, fun.Community = "bugs",
-                                                        fun.MetricNames = BugMetrics, fun.cols2keep=keep_cols, boo.Shiny = TRUE))
+            df_metval <- suppressWarnings(metric.values(fun.DF = df_data
+                                                        , fun.Community = "bugs"
+                                                        , fun.MetricNames = BugMetrics
+                                                        , fun.cols2keep=keep_cols
+                                                        , boo.Shiny = TRUE))
 
 
             # Increment the progress bar, and update the detail text.
@@ -233,51 +231,46 @@ shinyServer(function(input, output, session) {
             # Log
             message(paste0("Chosen IBI from Shiny app = ", input$MMI))
 
-
-            #
             # Save
-            # fn_metval <- file.path(".", "Results", "results_metval.tsv")
-            # write.table(df_metval, fn_metval, row.names = FALSE, col.names = TRUE, sep="\t")
             fn_metval <- file.path(".", "Results", "results_metval.csv")
             write.csv(df_metval, fn_metval, row.names = FALSE)
-            #
+
             # QC - upper case Index.Name
             names(df_metval)[grepl("Index.Name", names(df_metval))] <- "INDEX.NAME"
-
-
 
             # Increment the progress bar, and update the detail text.
             incProgress(1/n_inc, detail = "Calculate, Scores")
             Sys.sleep(0.50)
 
-            # Metric Scores
-            #
+            # MetSc Calc ####
 
             # Thresholds
-            fn_thresh <- file.path(system.file(package="BioMonTools"), "extdata", "MetricScoring.xlsx")
+            fn_thresh <- file.path(system.file(package="BioMonTools")
+                                   , "extdata", "MetricScoring.xlsx")
             df_thresh_metric <- read_excel(fn_thresh, sheet="metric.scoring")
             df_thresh_index <- read_excel(fn_thresh, sheet="index.scoring")
 
             # run scoring code
-            df_metsc <- metric.scores(DF_Metrics = df_metval, col_MetricNames = BugMetrics,
-                                      col_IndexName = "INDEX_NAME", col_IndexRegion = "INDEX_REGION",
-                                      DF_Thresh_Metric = df_thresh_metric, DF_Thresh_Index = df_thresh_index,
-                                      col_ni_total = "ni_total")
+            df_metsc <- metric.scores(DF_Metrics = df_metval
+                                      , col_MetricNames = BugMetrics
+                                      , col_IndexName = "INDEX_NAME"
+                                      , col_IndexRegion = "INDEX_REGION"
+                                      ,DF_Thresh_Metric = df_thresh_metric
+                                      , DF_Thresh_Index = df_thresh_index
+                                      , col_ni_total = "ni_total")
 
             # Save
-            # fn_metsc <- file.path(".", "Results", "results_metsc.tsv")
-            # write.table(df_metsc, fn_metsc, row.names = FALSE, col.names = TRUE, sep="\t")
             fn_metsc <- file.path(".", "Results", "results_metsc.csv")
             write.csv(df_metsc, fn_metsc, row.names = FALSE)
 
-            # MAP and Plot requires df_metsc
+            # Data Explorer requires df_metsc
             map_data$df_metsc <- df_metsc
-
-
 
             # Increment the progress bar, and update the detail text.
             incProgress(1/n_inc, detail = "Create, summary report (~ 20 - 40 sec)")
             Sys.sleep(0.75)
+
+            # Summary Report ####
 
             # Render Summary Report (rmarkdown file)
             # rmarkdown::render(input = file.path(".", "Extras", "Summary_IL.rmd"), output_format = "word_document",
@@ -292,6 +285,8 @@ shinyServer(function(input, output, session) {
             incProgress(1/n_inc, detail = "Create, Zip")
             Sys.sleep(0.50)
 
+            # Save Results ####
+
             # Create zip file
             fn_4zip <- list.files(path = file.path(".", "Results")
                                   , pattern = "^results_"
@@ -302,10 +297,6 @@ shinyServer(function(input, output, session) {
             # enable download button
             shinyjs::enable("b_downloadData")
 
-            # #
-            # return(myMetric.Values)
-            # end sink
-            #flush.console()
             sink() # console
             sink() # message
             #
@@ -319,32 +310,12 @@ shinyServer(function(input, output, session) {
     # Downloadable csv of selected dataset
     output$b_downloadData <- downloadHandler(
         # use index and date time as file name
-        #myDateTime <- format(Sys.time(), "%Y%m%d_%H%M%S")
-
         filename = function() {
             paste(input$MMI, "_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip", sep = "")
         },
         content = function(fname) {##content~START
-            # tmpdir <- tempdir()
-            #setwd(tempdir())
-            # fs <- c("input.csv", "metval.csv", "metsc.csv")
-            # file.copy(inFile$datapath, "input.csv")
-            # file.copy(inFile$datapath, "metval.tsv")
-            # file.copy(inFile$datapath, "metsc.tsv")
-            # file.copy(inFile$datapath, "IBI_plot.jpg")
-            # write.csv(datasetInput(), file="input.csv", row.names = FALSE)
-            # write.csv(datasetInput(), file="metval.csv", row.names = FALSE)
-            # write.csv(datasetInput(), file="metsc.csv", row.names = FALSE)
-            #
-            # Create Zip file
-            #zip(zipfile = fname, files=fs)
-            #if(file.exists(paste0(fname, ".zip"))) {file.rename(paste0(fname, ".zip"), fname)}
-
             file.copy(file.path(".", "Results", "results.zip"), fname)
-
-            #
         }##content~END
-        #, contentType = "application/zip"
     )##downloadData~END
 
     # Data Explorer ####
@@ -356,9 +327,11 @@ shinyServer(function(input, output, session) {
 
     output$mymap <- renderLeaflet({
 
+      ## Map Setup ####
+
       req(!is.null(map_data$df_metsc))
 
-      df_data <- map_data$df_metsc
+      df_data4Map <- map_data$df_metsc
 
       # create Narratives
 
@@ -367,9 +340,9 @@ shinyServer(function(input, output, session) {
                           ,"Moderately Degraded"
                           ,"Severely Degraded"))
 
-      Narratives <- ifelse(df_data$Index_Nar == "Exceptional", "Exceptional",
-                           ifelse(df_data$Index_Nar == "Satisfactory", "Satisfactory",
-                                  ifelse(df_data$Index_Nar == "Moderately Degraded", "Moderately Degraded",
+      Narratives <- ifelse(df_data4Map$Index_Nar == "Exceptional", "Exceptional",
+                           ifelse(df_data4Map$Index_Nar == "Satisfactory", "Satisfactory",
+                                  ifelse(df_data4Map$Index_Nar == "Moderately Degraded", "Moderately Degraded",
                                          "Severely Degraded")))
 
       Narratives <- factor(Narratives, levels = c("Exceptional"
@@ -381,23 +354,20 @@ shinyServer(function(input, output, session) {
       pal <- colorFactor(
         palette = c('green', 'yellow', 'orange', 'red'),
         domain = Narratives,
-        ordered = TRUE
-      )
-
-      # create Region_Name column to combine Index_Regions
+        ordered = TRUE)
 
       # subset data by Index_Region
 
-      N_data <- df_data %>%
+      N_data <- df_data4Map %>%
         filter(INDEX_REGION == "NORTH")
 
-      C_data <- df_data %>%
+      C_data <- df_data4Map %>%
         filter(INDEX_REGION == "CENTRAL")
 
-      S_data <- df_data %>%
+      S_data <- df_data4Map %>%
         filter(INDEX_REGION == "SOUTH")
 
-
+      # Main Map ####
       leaflet() %>%
         addTiles() %>%
         addProviderTiles(providers$Esri.WorldStreetMap, group="Esri WSM") %>%
@@ -463,28 +433,17 @@ shinyServer(function(input, output, session) {
                          options = layersControlOptions(collapsed = TRUE))%>%
         hideGroup(c("Bug Site Classes", "IEPA Lake Polygons")) %>%
         addMiniMap(toggleDisplay = TRUE, tiles = providers$Esri.WorldStreetMap)
-      # %>%
-      #   onRender( # used for making download button https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
-      #     "function(el, x) {
-      #       L.easyPrint({
-      #         sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
-      #         filename: 'mymap',
-      #         exportOnly: true,
-      #         hideControlContainer: true
-      #       }).addTo(this);
-      #       }"
-      #   ) #onRender ~END
-
       }) ##renderLeaflet~END
 
+    ## Map alteration ####
     # Map that filters output data to only a single site
-   observeEvent(input$siteid.select,{
+    observeEvent(input$siteid.select,{
       req(!is.null(map_data$df_metsc))
 
-      df_data <- map_data$df_metsc
+      df_data4Map <- map_data$df_metsc
 
       #
-      df_filtered <- df_data[df_data$SAMPLEID == input$siteid.select, ]
+      df_filtered <- df_data4Map[df_data4Map$SAMPLEID == input$siteid.select, ]
 
       #
       # get centroid (use mean just in case have duplicates)
@@ -492,9 +451,7 @@ shinyServer(function(input, output, session) {
       #
       # modify map
       leafletProxy("mymap") %>%
-        #clearShapes() %>%  # removes all layers
         removeShape("layer_site_selected") %>%
-        #addPolylines(data=filteredData()
         addCircles(data=df_filtered
                    , lng=~LONG
                    , lat=~LAT
@@ -508,7 +465,6 @@ shinyServer(function(input, output, session) {
                    , radius=30) %>%
 
         setView(view.cent[1], view.cent[2], zoom = 16) # 1= whole earth
-
     }) ## observeEvent(input$siteid.select) ~ END
 
 
@@ -606,8 +562,5 @@ shinyServer(function(input, output, session) {
               panel.border = element_blank(),
               axis.line = element_line(color = "black"),
               legend.position = "none")
-
-
     }) ## renderPlot ~ END
-
 })##shinyServer~END
