@@ -462,17 +462,18 @@ shinyServer(function(input, output, session) {
                          baseGroups = c("Esri WSM", "Positron", "Toner Lite"),
                          options = layersControlOptions(collapsed = TRUE))%>%
         hideGroup(c("Bug Site Classes", "IEPA Lake Polygons")) %>%
-        addMiniMap(toggleDisplay = TRUE, tiles = providers$Esri.WorldStreetMap) %>%
-        onRender( # used for making download button https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
-          "function(el, x) {
-            L.easyPrint({
-              sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
-              filename: 'mymap',
-              exportOnly: true,
-              hideControlContainer: true
-            }).addTo(this);
-            }"
-        )
+        addMiniMap(toggleDisplay = TRUE, tiles = providers$Esri.WorldStreetMap)
+      # %>%
+      #   onRender( # used for making download button https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
+      #     "function(el, x) {
+      #       L.easyPrint({
+      #         sizeModes: ['Current', 'A4Landscape', 'A4Portrait'],
+      #         filename: 'mymap',
+      #         exportOnly: true,
+      #         hideControlContainer: true
+      #       }).addTo(this);
+      #       }"
+      #   ) #onRender ~END
 
       }) ##renderLeaflet~END
 
