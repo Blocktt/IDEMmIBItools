@@ -76,7 +76,7 @@ shinyServer(function(input, output, session) {
                                                                  , paste("* ", col_missing, collapse = "\n")))
         )##END ~ validate() code
 
-        ########################### MAP and PLOT Observer ########################################
+        # MAP and PLOT Observer ####
         observe({
           inFile<- input$fn_input
           if(is.null(inFile))
@@ -315,7 +315,7 @@ shinyServer(function(input, output, session) {
     }##expr~ObserveEvent~END
     )##observeEvent~b_CalcIBI~END
 
-
+    ## Download dataset ####
     # Downloadable csv of selected dataset
     output$b_downloadData <- downloadHandler(
         # use index and date time as file name
@@ -347,21 +347,42 @@ shinyServer(function(input, output, session) {
         #, contentType = "application/zip"
     )##downloadData~END
 
-    ########################
-    ##### Map Creation #####
-    ########################
-
+    # Data Explorer ####
 
     # create quantile color palette to change color of markers based on index values
-    scale_range <- c(0,100)
-    at <- c(0, 25, 50, 75, 100)
-    qpal <- colorBin(c("red","yellow", "green"), domain = scale_range, bins = at)
+    # scale_range <- c(0,100)
+    # at <- c(0, 25, 50, 75, 100)
+    # qpal <- colorBin(c("red","yellow", "green"), domain = scale_range, bins = at)
 
     output$mymap <- renderLeaflet({
 
       req(!is.null(map_data$df_metsc))
 
       df_data <- map_data$df_metsc
+
+      # create Narratives
+
+      Nar_Map <- factor(c("Exceptional"
+                          ,"Satisfactory"
+                          ,"Moderately Degraded"
+                          ,"Severely Degraded"))
+
+      Narratives <- ifelse(df_data$Index_Nar == "Exceptional", "Exceptional",
+                           ifelse(df_data$Index_Nar == "Satisfactory", "Satisfactory",
+                                  ifelse(df_data$Index_Nar == "Moderately Degraded", "Moderately Degraded",
+                                         "Severely Degraded")))
+
+      Narratives <- factor(Narratives, levels = c("Exceptional"
+                                                  ,"Satisfactory"
+                                                  ,"Moderately Degraded"
+                                                  ,"Severely Degraded"))
+
+
+      pal <- colorFactor(
+        palette = c('green', 'yellow', 'orange', 'red'),
+        domain = Narratives,
+        ordered = TRUE
+      )
 
       # create Region_Name column to combine Index_Regions
 
@@ -379,6 +400,7 @@ shinyServer(function(input, output, session) {
 
       leaflet() %>%
         addTiles() %>%
+        addProviderTiles(providers$Esri.WorldStreetMap, group="Esri WSM") %>%
         addProviderTiles("CartoDB.Positron", group="Positron") %>%
         addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") %>%
         addPolygons(data = IL_BugClasses
@@ -405,7 +427,7 @@ shinyServer(function(input, output, session) {
                                                                   ,"Lake ID:", N_data$LAKECODE, "<br>"
                                                                   ,"<b> Index Value:</b>", round(N_data$Index, 2), "<br>"
                                                                   ,"<b> Narrative:</b>", N_data$Index_Nar)
-                         , color = "black", fillColor = ~qpal(Index), fillOpacity = 1, stroke = TRUE
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
                          , clusterOptions = markerClusterOptions()
 
         ) %>%
@@ -416,7 +438,7 @@ shinyServer(function(input, output, session) {
                                                                     ,"Lake ID:", C_data$LAKECODE, "<br>"
                                                                     ,"<b> Index Value:</b>", round(C_data$Index, 2), "<br>"
                                                                     ,"<b> Narrative:</b>", C_data$Index_Nar)
-                         , color = "black", fillColor = ~qpal(Index), fillOpacity = 1, stroke = TRUE
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
                          , clusterOptions = markerClusterOptions()
 
         ) %>%
@@ -427,20 +449,20 @@ shinyServer(function(input, output, session) {
                                                                     ,"Lake ID:", S_data$LAKECODE, "<br>"
                                                                     ,"<b> Index Value:</b>", round(S_data$Index, 2), "<br>"
                                                                     ,"<b> Narrative:</b>", S_data$Index_Nar)
-                         , color = "black", fillColor = ~qpal(Index), fillOpacity = 1, stroke = TRUE
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
                          , clusterOptions = markerClusterOptions()
 
         ) %>%
-        addLegend(pal = qpal,
-                  values = scale_range,
+        addLegend(pal = pal,
+                  values = Narratives,
                   position = "bottomright",
-                  title = "Index Scores",
+                  title = "Index Narratives",
                   opacity = 1) %>%
         addLayersControl(overlayGroups = c("North", "Central", "South", "Bug Site Classes", "IEPA Lake Polygons"),
-                         baseGroups = c("OSM (default)", "Positron", "Toner Lite"),
+                         baseGroups = c("Esri WSM", "Positron", "Toner Lite"),
                          options = layersControlOptions(collapsed = TRUE))%>%
-        # hideGroup(c("Bug Site Classes")) %>%
-        addMiniMap(toggleDisplay = TRUE) %>%
+        hideGroup(c("Bug Site Classes", "IEPA Lake Polygons")) %>%
+        addMiniMap(toggleDisplay = TRUE, tiles = providers$Esri.WorldStreetMap) %>%
         onRender( # used for making download button https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
           "function(el, x) {
             L.easyPrint({
@@ -490,7 +512,7 @@ shinyServer(function(input, output, session) {
 
 
 
-    ########### Data Explorer Tab ######################
+    ## Plots #####
 
     df_sitefilt <- reactive({
       req(!is.null(map_data$df_metsc))
