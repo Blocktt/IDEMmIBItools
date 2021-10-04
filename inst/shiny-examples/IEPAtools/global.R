@@ -50,6 +50,6 @@ jsfile <- "https://rawgit.com/rowanwins/leaflet-easyPrint/gh-pages/dist/bundle.j
 ## Illinois 2021 Bug IBI Site Classes
 
 IL_BugClasses <- rgdal::readOGR(file.path(dir_data, "IEPA_SiteClasses.shp"))
-
+Lakes_Poly <- rgdal::readOGR(file.path(dir_data, "Lakes_Poly.shp"))
 
 

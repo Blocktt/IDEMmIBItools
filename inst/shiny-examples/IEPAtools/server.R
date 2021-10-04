@@ -389,6 +389,15 @@ shinyServer(function(input, output, session) {
                     , group = "Bug Site Classes"
 
         ) %>%
+        addPolygons(data = Lakes_Poly
+                    , color = "blue"
+                    , weight = 3
+                    , fill = TRUE
+                    , fillColor = "Light Blue"
+                    , label = Lakes_Poly$NAME
+                    , group = "IEPA Lake Polygons"
+
+        ) %>%
         addCircleMarkers(data = N_data, lat = ~LAT, lng = ~LONG
                          , group = "North", popup = paste("SampleID:", N_data$SAMPLEID, "<br>"
                                                                   ,"Site Class:", N_data$INDEX_REGION, "<br>"
@@ -427,7 +436,7 @@ shinyServer(function(input, output, session) {
                   position = "bottomright",
                   title = "Index Scores",
                   opacity = 1) %>%
-        addLayersControl(overlayGroups = c("North", "Central", "South", "Bug Site Classes"),
+        addLayersControl(overlayGroups = c("North", "Central", "South", "Bug Site Classes", "IEPA Lake Polygons"),
                          baseGroups = c("OSM (default)", "Positron", "Toner Lite"),
                          options = layersControlOptions(collapsed = TRUE))%>%
         # hideGroup(c("Bug Site Classes")) %>%

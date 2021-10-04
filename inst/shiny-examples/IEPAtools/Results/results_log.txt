@@ -1,0 +1,27 @@
+Results Log from IEPAtools Shiny App
+2021-10-04 12:07:04
+file = IBI_input_LittoralABC_20210415.csv
+197taxa have the incorrect FFG descriptor, please use the following:
+Replace 'Collector' with 'CG'
+Replace 'Filterer' with 'CF'
+Replace 'Predator' with 'PR'
+Replace 'Scraper' with 'SC'
+Replace 'Shredder' with 'SH'
+Failure to change FFG to correct coding scheme will result in incorrect metric calculations
+Warning in eval(expr, env) :
+  Metrics related to the following fields are invalid:
+   SUBPHYLUM
+   SUBCLASS
+   INFRAORDER
+   LIFE_CYCLE
+   BCG_ATTR
+   THERMAL_INDICATOR
+   LONGLIVED
+   NOTEWORTHY
+   FFG2
+   TOLVAL2
+   HABITAT
+Chosen IBI from Shiny app = 
+Warning in sink() : no sink to remove
+
+
