@@ -1,0 +1,13 @@
+name: IEPAtools
+title: IEPAtools
+username:
+account: tetratech-wtr-wne
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4019603
+bundleId: 5107671
+url: https://tetratech-wtr-wne.shinyapps.io/IEPAtools/
+when: 1633467267.64583
+lastSyncTime: 1633467267.64583
+asMultiple: FALSE
+asStatic: FALSE
