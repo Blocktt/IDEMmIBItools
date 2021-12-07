@@ -35,11 +35,11 @@ options(shiny.maxRequestSize = 25*1024^2)
 
 # define which metrics michigan wants to keep in indices
 
-BugMetrics <- c("nt_ECT"
-                ,"pi_Dipt"
-                ,"pi_ffg_filt"
-                ,"nt_habit_climb"
-                ,"pi_tv_toler")# END BugMetrics
+BugMetrics <- c("pt_EPT"
+                ,"pt_Odon"
+                ,"pi_Tanyp2Chi"
+                ,"pi_tv_toler"
+                ,"pt_ffg_shred")# END BugMetrics
 
 #### GIS/Map data ####
 
