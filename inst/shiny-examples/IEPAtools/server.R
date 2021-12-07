@@ -499,19 +499,19 @@ shinyServer(function(input, output, session) {
 
       # shape palette
       shape_pal <- c("Index" = 16
-                     ,"nt_ECT" = 15
-                     ,"pi_Dipt" = 15
-                     ,"pi_ffg_filt" = 15
-                     ,"nt_habit_climb" = 15
-                     ,"pi_tv_toler" = 15)
+                     ,"pt_EPT" = 15
+                     ,"pt_Odon" = 15
+                     ,"pi_Tanyp2Chi" = 15
+                     ,"pi_tv_toler" = 15
+                     ,"pt_ffg_shred" = 15)
 
       # size palette
       size_pal <- c("Index" = 10
-                    ,"nt_ECT" = 5
-                    ,"pi_Dipt" = 5
-                    ,"pi_ffg_filt" = 5
-                    ,"nt_habit_climb" = 5
-                    ,"pi_tv_toler" = 5)
+                    ,"pt_EPT" = 5
+                    ,"pt_Odon" = 5
+                    ,"pi_Tanyp2Chi" = 5
+                    ,"pi_tv_toler" = 5
+                    ,"pt_ffg_shred" = 5)
 
       ggplot(df_grph_input, aes(x=Variable, y = Score, shape = Variable))+
         geom_point(aes(size = Variable))+
