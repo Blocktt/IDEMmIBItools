@@ -17,6 +17,13 @@ knitr::opts_chunk$set(
 cat(paste0("Last Update: ",Sys.time()))
 ```
 
+IEPAtools v0.1.1.910 (2021-12-07)
+================
+
+* Updated to final Composite F IBI (added thresholds)
+* Updated background and instructions information
+* Updated background and instructions layout
+
 IEPAtools v0.1.1.900 (2021-10-05)
 ================
 

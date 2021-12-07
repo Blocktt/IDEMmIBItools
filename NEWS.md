@@ -3,7 +3,13 @@ NEWS-IEPAtools
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-10-05 16:53:12
+    #> Last Update: 2021-12-07 11:51:49
+
+# IEPAtools v0.1.1.910 (2021-12-07)
+
+-   Updated to final Composite F IBI (added thresholds)
+-   Updated background and instructions information
+-   Updated background and instructions layout
 
 # IEPAtools v0.1.1.900 (2021-10-05)
 

@@ -62,8 +62,7 @@ shinyServer(function(input, output, session) {
                               ,"TRIBE"
                               ,"GENUS"
                               ,"FFG"
-                              ,"TOLVAL"
-                              ,"HABIT")
+                              ,"TOLVAL")
 
         column_names <- colnames(df_input)
 

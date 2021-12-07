@@ -19,11 +19,11 @@ if(boo_DEBUG==TRUE){
 
 # Instructions
 
-IEPAtools was developed to calculate benthic macroinvertebrate metrics and Indices of Biotic Integrity (IBI) for lakes in Illinois. Detailed documentation of IBI development can be downloaded [here](https://github.com/Blocktt/ShinyAppDocuments/tree/main/IEPAtools/Reports). Users can run any data through the IBI calculator and get a result. However, if samples do not meet the criteria described on the Background page, results should be interpreted with caution.
+IEPAtools was developed to calculate benthic macroinvertebrate metrics and the Composite F Index of Biotic Integrity (IBI) for lakes in Illinois. Detailed documentation of the IBI development project can be downloaded [here](https://github.com/Blocktt/ShinyAppDocuments/tree/main/IEPAtools/Reports). Users can run any data through the IBI calculator and get a result. However, if samples do not meet the criteria described on the Background page, results should be interpreted with caution.
 
 The Instructions are divided into three sections: 1) preparing the input file; 2) app operation; and 3) frequently asked questions (FAQ). Links to an example input file and a document containing more detailed information on preparing the input file are also provided.
 
-This app was developed by Ben Block from Tetra Tech, Inc. (Ben.Block@tetratech.com), with underlying R code written by Ben Block and Erik Leppo (Erik.Leppo@tetratech.com). Please contact Ben Block should any issues or questions arise.
+This app was developed by Ben Block from Tetra Tech, Inc. (Ben.Block@tetratech.com), with underlying R code written by Erik Leppo (Erik.Leppo@tetratech.com) and Ben Block. Please contact Ben Block should any issues or questions arise.
 
 ## Foreword
 Tetra Tech, Inc. developed the IEPAtools shiny app for the Illinois Environmental Protection Agency. It allows IEPA and their partners to calculate IBI scores for lake benthic macroinvertebrate samples. The new lake IBI, specifically designed for the Composite F sampling method, improves IEPA’s diagnostic ability to identify degradation in biological integrity and water quality. The app is streamlined and easy to operate, and only requires an input dataset to function. Shiny apps are interactive web applications that serve as graphical user interfaces. They are linked to R, which is an open source programming language and software environment for statistical computing.

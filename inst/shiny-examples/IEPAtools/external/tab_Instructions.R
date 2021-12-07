@@ -1,8 +1,23 @@
 function(){
-  tabPanel("Instructions",
+  tabPanel("Background",
+           sidebarLayout(
+             sidebarPanel(
+               img(src = "IEPA_logo.png", height = 100)
+               , width = 3
+             )# sidebarPanel~END
+             , mainPanel(
+               includeHTML("www/App_Instructions.html")
+               , width = 7
+             )# mainPanel~END
+           )# sidebarLayout~END
+  ) # tabPanel~END
+}# FUNCTION~END
 
-           img(src = "IEPA_logo.png", height = 175),
-           includeHTML("www/App_Instructions.html")
-
-  ) #tabPanel ~END
-}##FUNCTION~END
+# function(){
+#   tabPanel("Instructions",
+#
+#            img(src = "IEPA_logo.png", height = 175),
+#            includeHTML("www/App_Instructions.html")
+#
+#   ) #tabPanel ~END
+# }##FUNCTION~END

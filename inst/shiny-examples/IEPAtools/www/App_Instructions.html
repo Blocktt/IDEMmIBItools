@@ -3,9 +3,9 @@
 
 <div id="instructions" class="section level1">
 <h1>Instructions</h1>
-<p>IEPAtools was developed to calculate benthic macroinvertebrate metrics and Indices of Biotic Integrity (IBI) for lakes in Illinois. Detailed documentation of IBI development can be downloaded <a href="https://github.com/Blocktt/ShinyAppDocuments/tree/main/IEPAtools/Reports">here</a>. Users can run any data through the IBI calculator and get a result. However, if samples do not meet the criteria described on the Background page, results should be interpreted with caution.</p>
+<p>IEPAtools was developed to calculate benthic macroinvertebrate metrics and the Composite F Index of Biotic Integrity (IBI) for lakes in Illinois. Detailed documentation of the IBI development project can be downloaded <a href="https://github.com/Blocktt/ShinyAppDocuments/tree/main/IEPAtools/Reports">here</a>. Users can run any data through the IBI calculator and get a result. However, if samples do not meet the criteria described on the Background page, results should be interpreted with caution.</p>
 <p>The Instructions are divided into three sections: 1) preparing the input file; 2) app operation; and 3) frequently asked questions (FAQ). Links to an example input file and a document containing more detailed information on preparing the input file are also provided.</p>
-<p>This app was developed by Ben Block from Tetra Tech, Inc. (<a href="mailto:Ben.Block@tetratech.com" class="email">Ben.Block@tetratech.com</a>), with underlying R code written by Ben Block and Erik Leppo (<a href="mailto:Erik.Leppo@tetratech.com" class="email">Erik.Leppo@tetratech.com</a>). Please contact Ben Block should any issues or questions arise.</p>
+<p>This app was developed by Ben Block from Tetra Tech, Inc. (<a href="mailto:Ben.Block@tetratech.com" class="email">Ben.Block@tetratech.com</a>), with underlying R code written by Erik Leppo (<a href="mailto:Erik.Leppo@tetratech.com" class="email">Erik.Leppo@tetratech.com</a>) and Ben Block. Please contact Ben Block should any issues or questions arise.</p>
 <div id="foreword" class="section level2">
 <h2>Foreword</h2>
 <p>Tetra Tech, Inc. developed the IEPAtools shiny app for the Illinois Environmental Protection Agency. It allows IEPA and their partners to calculate IBI scores for lake benthic macroinvertebrate samples. The new lake IBI, specifically designed for the Composite F sampling method, improves IEPA’s diagnostic ability to identify degradation in biological integrity and water quality. The app is streamlined and easy to operate, and only requires an input dataset to function. Shiny apps are interactive web applications that serve as graphical user interfaces. They are linked to R, which is an open source programming language and software environment for statistical computing.</p>
@@ -394,23 +394,6 @@ Yes
 </td>
 <td style="text-align:left;">
 Taxa with tolerance values ranging from 0 to 3 are considered ‘intolerant’ to anthropogenic disturbance and are included in the ‘intolerant’ metric calculations. Those with values ranging from 7 to 10 are included in the ‘tolerant’ metrics.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-HABIT
-</td>
-<td style="text-align:left;">
-text
-</td>
-<td style="text-align:left;">
-SW, CN, SP, CB, BU (select multiple)
-</td>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:left;">
-Priamry insect habits. Choose from, can have multiple entries separated by comma: Swimmers (SW), Clingers (CN), Sprawlers (SP), Climbers (CB), Burrowers (BU)
 </td>
 </tr>
 </tbody>
