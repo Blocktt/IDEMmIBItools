@@ -42,8 +42,8 @@ shinyServer(function(input, output, session) {
                              sep = input$sep, quote = input$quote
                              , stringsAsFactors = FALSE)
 
-        required_columns <- c("INDEX_NAME"
-                              ,"STATIONID"
+        required_columns <- c("INDEX_NAME" # Required input columns
+                              ,"LAKECODE"
                               ,"COLLDATE"
                               ,"COLLMETH"
                               ,"SAMPLEID"
@@ -56,15 +56,13 @@ shinyServer(function(input, output, session) {
                               ,"NONTARGET"
                               ,"PHYLUM"
                               ,"CLASS"
-                              ,"SUBCLASS"
                               ,"ORDER"
                               ,"FAMILY"
                               ,"SUBFAMILY"
                               ,"TRIBE"
                               ,"GENUS"
                               ,"FFG"
-                              ,"TOLVAL"
-                              ,"LIFE_CYCLE")
+                              ,"TOLVAL")
 
         column_names <- colnames(df_input)
 
@@ -122,7 +120,7 @@ shinyServer(function(input, output, session) {
         shiny::withProgress({
             #
             # Number of increments
-            n_inc <- 7
+            n_inc <- 6
 
             ## Sink output ####
             #fn_sink <- file.path(".", "Results", "results_log.txt")
@@ -131,7 +129,7 @@ shinyServer(function(input, output, session) {
             sink(file_sink, type = "message", append = TRUE)
 
             # Log
-            message("Results Log from MassIBItools Shiny App")
+            message("Results Log from IEPAtools Shiny App")
             message(Sys.time())
             inFile <- input$fn_input
             message(paste0("file = ", inFile$name))
@@ -196,7 +194,6 @@ shinyServer(function(input, output, session) {
             # Data Prep ####
 
             # prior to metric calculation, we need to add columns that aren't part of the dataset but need to be in the input dataframe
-            # otherwise, metric.values.MI () will produce an error when on shinyapps.io (dated 2020-07-30)
 
             # convert Field Names to UPPER CASE
             names(df_data) <- toupper(names(df_data))
@@ -206,7 +203,8 @@ shinyServer(function(input, output, session) {
                          , "INDEX_REGION", "NONTARGET", "PHYLUM", "SUBPHYLUM", "CLASS", "SUBCLASS"
                          , "INFRAORDER", "ORDER", "FAMILY", "SUBFAMILY", "TRIBE", "GENUS"
                          , "FFG", "HABIT", "LIFE_CYCLE", "TOLVAL", "BCG_ATTR", "THERMAL_INDICATOR"
-                         , "LONGLIVED", "NOTEWORTHY", "FFG2", "TOLVAL2", "HABITAT")
+                         , "LONGLIVED", "NOTEWORTHY", "FFG2", "TOLVAL2", "HABITAT",
+                         "UFC", "ELEVATION_ATTR", "GRADIENT_ATTR", "WSAREA_ATTR")
             col.req.missing <- col.req[!(col.req %in% toupper(names(df_data)))]
 
             # Add missing fields
@@ -218,14 +216,12 @@ shinyServer(function(input, output, session) {
             # save each file separately
 
             # columns to keep
-            keep_cols <- c("Lat", "Long", "STATIONID", "COLLDATE", "COLLMETH")
+            keep_cols <- c("Lat", "Long", "LAKECODE", "COLLDATE", "COLLMETH")
 
             # Metric calculation ####
             df_metval <- suppressWarnings(metric.values(fun.DF = df_data, fun.Community = "bugs",
-                                                           fun.MetricNames = SNEPMetrics, fun.cols2keep=keep_cols, boo.Shiny = TRUE))
+                                                           fun.MetricNames = BugMetrics, fun.cols2keep=keep_cols, boo.Shiny = TRUE))
 
-            df_metval <- df_metval %>%
-              mutate(INDEX_REGION = replace(INDEX_REGION, INDEX_REGION == "LOWGRADIENTIBI", "LowGradientIBI"))
 
             # Increment the progress bar, and update the detail text.
             incProgress(1/n_inc, detail = "Metrics have been calculated!")
@@ -256,7 +252,7 @@ shinyServer(function(input, output, session) {
 
             # run scoring code
             df_metsc <- metric.scores(DF_Metrics = df_metval
-                                      , col_MetricNames = SNEPMetrics
+                                      , col_MetricNames = BugMetrics
                                       , col_IndexName = "INDEX_NAME"
                                       , col_IndexRegion = "INDEX_REGION"
                                       , DF_Thresh_Metric = df_thresh_metric
@@ -264,9 +260,6 @@ shinyServer(function(input, output, session) {
                                       , col_ni_total = "ni_total")
 
             df_metsc$Index <- as.numeric(df_metsc$Index)
-
-            df_metsc <- df_metsc %>%
-              mutate(INDEX_REGION = replace(INDEX_REGION, INDEX_REGION == "LOWGRADIENTIBI", "LowGradientIBI"))
 
             # Save
             # fn_metsc <- file.path(".", "Results", "results_metsc.tsv")
@@ -277,20 +270,14 @@ shinyServer(function(input, output, session) {
             # MAP and Plot requires df_metsc
             map_data$df_metsc <- df_metsc
 
-
-
-            # Increment the progress bar, and update the detail text.
-            incProgress(1/n_inc, detail = "Create, summary report (~ 20 - 40 sec)")
-            Sys.sleep(0.75)
-
             # Summary report ####
 
             # Render Summary Report (rmarkdown file)
-            rmarkdown::render(input = file.path(".", "Extras", "Summary_SNEP.rmd")
-                              , output_format = "word_document"
-                              , output_dir = file.path(".", "Results")
-                              , output_file = "results_summary_report"
-                              , quiet = TRUE)
+            # rmarkdown::render(input = file.path(".", "Extras", "Summary_SNEP.rmd")
+            #                   , output_format = "word_document"
+            #                   , output_dir = file.path(".", "Results")
+            #                   , output_file = "results_summary_report"
+            #                   , quiet = TRUE)
 
             # Increment the progress bar, and update the detail text.
             incProgress(1/n_inc, detail = "Ben's code is magical!")
@@ -340,71 +327,104 @@ shinyServer(function(input, output, session) {
     # Data Explorer ####
 
     # create quantile color palette to change color of markers based on index values
-    scale_range <- c(0,100)
-    at <- c(0, 35, 55, 75, 100)
-    qpal <- colorBin(c("red","yellow", "green"), domain = scale_range, bins = at)
 
     output$mymap <- renderLeaflet({
 
       req(!is.null(map_data$df_metsc))
 
-      df_4Map <- map_data$df_metsc
+      df_data4Map <- map_data$df_metsc
+
+      # create Narratives
+
+      Nar_Map <- factor(c("Exceptional"
+                          ,"Satisfactory"
+                          ,"Moderately Degraded"
+                          ,"Severely Degraded"))
+
+      Narratives <- ifelse(df_data4Map$Index_Nar == "Exceptional", "Exceptional",
+                           ifelse(df_data4Map$Index_Nar == "Satisfactory", "Satisfactory",
+                                  ifelse(df_data4Map$Index_Nar == "Moderately Degraded", "Moderately Degraded",
+                                         "Severely Degraded")))
+
+      Narratives <- factor(Narratives, levels = c("Exceptional"
+                                                  ,"Satisfactory"
+                                                  ,"Moderately Degraded"
+                                                  ,"Severely Degraded"))
+
+
+      pal <- colorFactor(
+        palette = c('green', 'yellow', 'orange', 'red'),
+        domain = Narratives,
+        ordered = TRUE)
 
       # subset data by Index_Region
+
+      N_data <- df_data4Map %>%
+        filter(INDEX_REGION == "NORTH")
+
+      C_data <- df_data4Map %>%
+        filter(INDEX_REGION == "CENTRAL")
+
+      S_data <- df_data4Map %>%
+        filter(INDEX_REGION == "SOUTH")
+
+      # Main map
 
       leaflet() %>%
         addTiles() %>%
         addProviderTiles(providers$Esri.WorldStreetMap, group="Esri WSM") %>%
         addProviderTiles("CartoDB.Positron", group="Positron") %>%
-        addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite") %>%
-        addPolygons(data = MA_region_shape
-                    , color = "blue"
-                    , weight = 5
-                    , fill = FALSE
-                    , label = MA_region_shape$BugClass
-                    , group = "MA Regions"
-        ) %>%
-        addPolygons(data = basins_shape
+        addProviderTiles(providers$Stamen.TonerLite, group="Toner Lite")  %>%
+        addPolygons(data = IL_BugClasses
                     , color = "green"
                     , weight = 3
                     , fill = FALSE
-                    , label = basins_shape$NAME
-                    , group = "Major Basins"
+                    , label = IL_BugClasses$Site_Class
+                    , group = "Bug Site Classes"
+
         ) %>%
-        addPolygons(data = SNEP_region
-                    , color = "purple"
-                    , weight = 5
-                    , fill = FALSE
-                    , label = SNEP_region$Name
-                    , group = "SNEP Region"
-        ) %>%
-        addCircleMarkers(data = df_4Map, lat = ~LAT, lng = ~LONG
-                         , group = "SNEP Sites"
-                         , popup = paste("SampleID:", df_4Map$SAMPLEID, "<br>"
-                                         ,"Site Class:", df_4Map$INDEX_REGION, "<br>"
-                                         ,"Coll Date:", df_4Map$COLLDATE, "<br>"
-                                         ,"Unique ID:", df_4Map$STATIONID, "<br>"
-                                         ,"Score pi_OET:", round(df_4Map$SC_pi_OET,2), "<br>"
-                                         ,"Score pt_ffg_pred:", round(df_4Map$SC_pt_ffg_pred,2), "<br>"
-                                         ,"Score pt_NonIns:", round(df_4Map$SC_pt_NonIns,2), "<br>"
-                                         ,"Score pt_POET:", round(df_4Map$SC_pt_POET,2), "<br>"
-                                         ,"Score pt_tv_toler:", round(df_4Map$SC_pt_tv_toler,2), "<br>"
-                                         ,"Score pt_volt_semi:", round(df_4Map$SC_pt_volt_semi,2), "<br>"
-                                         ,"<b> Index Value:</b>", round(df_4Map$Index, 2), "<br>"
-                                         ,"<b> Narrative:</b>", df_4Map$Index_Nar)
-                         , color = "black", fillColor = ~qpal(Index)
-                         , fillOpacity = 1, stroke = TRUE
+        addCircleMarkers(data = N_data, lat = ~LAT, lng = ~LONG
+                         , group = "North", popup = paste("SampleID:", N_data$SAMPLEID, "<br>"
+                                                          ,"Site Class:", N_data$INDEX_REGION, "<br>"
+                                                          ,"Coll Date:", N_data$COLLDATE, "<br>"
+                                                          ,"Lake ID:", N_data$LAKECODE, "<br>"
+                                                          ,"<b> Index Value:</b>", round(N_data$Index, 2), "<br>"
+                                                          ,"<b> Narrative:</b>", N_data$Index_Nar)
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
                          , clusterOptions = markerClusterOptions()
+
         ) %>%
-        addLegend(pal = qpal
-                  ,values = scale_range
-                  ,position = "bottomright"
-                  ,title = "Index Scores"
-                  ,opacity = 1) %>%
-        addLayersControl(overlayGroups = c("SNEP Sites", "MA Regions", "SNEP Region" ,"Major Basins"),
+        addCircleMarkers(data = C_data, lat = ~LAT, lng = ~LONG
+                         , group = "Central", popup = paste("SampleID:", C_data$SAMPLEID, "<br>"
+                                                            ,"Site Class:", C_data$INDEX_REGION, "<br>"
+                                                            ,"Coll Date:", C_data$COLLDATE, "<br>"
+                                                            ,"Lake ID:", C_data$LAKECODE, "<br>"
+                                                            ,"<b> Index Value:</b>", round(C_data$Index, 2), "<br>"
+                                                            ,"<b> Narrative:</b>", C_data$Index_Nar)
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
+                         , clusterOptions = markerClusterOptions()
+
+        ) %>%
+        addCircleMarkers(data = S_data, lat = ~LAT, lng = ~LONG
+                         , group = "South", popup = paste("SampleID:", S_data$SAMPLEID, "<br>"
+                                                          ,"Site Class:", S_data$INDEX_REGION, "<br>"
+                                                          ,"Coll Date:", S_data$COLLDATE, "<br>"
+                                                          ,"Lake ID:", S_data$LAKECODE, "<br>"
+                                                          ,"<b> Index Value:</b>", round(S_data$Index, 2), "<br>"
+                                                          ,"<b> Narrative:</b>", S_data$Index_Nar)
+                         , color = "black", fillColor = ~pal(Index_Nar), fillOpacity = 1, stroke = TRUE
+                         , clusterOptions = markerClusterOptions()
+
+        ) %>%
+        addLegend(pal = pal,
+                  values = Narratives,
+                  position = "bottomright",
+                  title = "Index Narratives",
+                  opacity = 1) %>%
+        addLayersControl(overlayGroups = c("North", "Central", "South", "Bug Site Classes"),
                          baseGroups = c("Esri WSM", "Positron", "Toner Lite"),
                          options = layersControlOptions(collapsed = TRUE))%>%
-        hideGroup(c("MA Regions", "SNEP Region" , "Major Basins")) %>%
+        hideGroup(c("Bug Site Classes")) %>%
         addMiniMap(toggleDisplay = TRUE, tiles = providers$Esri.WorldStreetMap)
       }) ##renderLeaflet~END
 
@@ -414,9 +434,9 @@ shinyServer(function(input, output, session) {
    observeEvent(input$siteid.select,{
       req(!is.null(map_data$df_metsc))
 
-      df_4Map <- map_data$df_metsc
+      df_data4Map <- map_data$df_metsc
 
-      df_filtered <- df_4Map[df_4Map$SAMPLEID == input$siteid.select, ]
+      df_filtered <- df_data4Map[df_data4Map$SAMPLEID == input$siteid.select, ]
 
       # get centroid (use mean just in case have duplicates)
       view.cent <- c(mean(df_filtered$LONG), mean(df_filtered$LAT))
@@ -472,21 +492,19 @@ shinyServer(function(input, output, session) {
 
       # shape palette
       shape_pal <- c("Index" = 16
-                     , "pi_OET" = 15
-                     , "pt_ffg_pred" = 15
-                     , "pt_NonIns" = 15
-                     , "pt_POET" = 15
-                     , "pt_tv_toler" = 15
-                     , "pt_volt_semi" = 15)
+                     ,"pt_EPT" = 15
+                     ,"pt_Odon" = 15
+                     ,"pi_Tanyp2Chi" = 15
+                     ,"pi_tv_toler" = 15
+                     ,"pt_ffg_shred" = 15)
 
       # size palette
       size_pal <- c("Index" = 10
-                    , "pi_OET" = 5
-                    , "pt_ffg_pred" = 5
-                    , "pt_NonIns" = 5
-                    , "pt_POET" = 5
-                    , "pt_tv_toler" = 5
-                    , "pt_volt_semi" = 5)
+                    ,"pt_EPT" = 5
+                    ,"pt_Odon" = 5
+                    ,"pi_Tanyp2Chi" = 5
+                    ,"pi_tv_toler" = 5
+                    ,"pt_ffg_shred" = 5)
 
       ggplot(df_grph_input, aes(x=Variable, y = Score, shape = Variable))+
         geom_point(aes(size = Variable))+
@@ -538,24 +556,4 @@ shinyServer(function(input, output, session) {
               legend.position = "none")
 
     }) ## renderPlot ~ END
-
-    # StoryMaps ####
-
-    ## Technical ####
-    #https://stackoverflow.com/questions/33020558/embed-iframe-inside-shiny-app
-    #https://stackoverflow.com/questions/59628035/r-shiny-how-to-fill-out-the-entire-space-of-the-browser-window-with-an-iframe
-    output$StoryMap_Tech <- renderUI({
-      Technical <- paste0("https://storymaps.arcgis.com/stories/f8d9ce1ca4a24bcda99c1b780ae85179")
-      # my_test <- tags$iframe(src=test, height=800, width=1535)
-      my_Technical <- tags$iframe(src=Technical, style='width:90vw;height:90vh;')
-      my_Technical
-    })## renderUI ~ END
-
-    output$StoryMap_NonTech <- renderUI({
-      NonTechnical <- paste0("https://storymaps.arcgis.com/stories/a70626f4c03e425ea9b3eecc5098f54b")
-      # my_test <- tags$iframe(src=test, height=800, width=1535)
-      my_NonTechnical <- tags$iframe(src=NonTechnical, style='width:90vw;height:90vh;')
-      my_NonTechnical
-    })## renderUI ~ END
-
 })##shinyServer~END
