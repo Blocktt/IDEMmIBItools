@@ -23,7 +23,7 @@ library(capture)
 
 
 # Drop-down boxes
-MMIs <- c("IEPA_2021_Bugs")
+MMI <- "IEPA_2021_Bugs"
 Community <- c("bugs")
 
 
@@ -42,7 +42,7 @@ BugMetrics <- c("pt_EPT"
 
 #### GIS/Map data ####
 
-dir_data <- file.path("GIS_Data/")
+dir_data <- file.path("GIS_Data")
 
 jsfile <- "https://rawgit.com/rowanwins/leaflet-easyPrint/gh-pages/dist/bundle.js"
 #https://stackoverflow.com/questions/47343316/shiny-leaflet-easyprint-plugin
@@ -50,6 +50,6 @@ jsfile <- "https://rawgit.com/rowanwins/leaflet-easyPrint/gh-pages/dist/bundle.j
 ## Illinois 2021 Bug IBI Site Classes
 
 IL_BugClasses <- rgdal::readOGR(file.path(dir_data, "IEPA_SiteClasses.shp"))
-Lakes_Poly <- rgdal::readOGR(file.path(dir_data, "Lakes_Poly.shp"))
+# Lakes_Poly <- rgdal::readOGR(file.path(dir_data, "Lakes_Poly.shp"))
 
 
