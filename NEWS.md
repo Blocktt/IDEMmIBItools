@@ -3,7 +3,7 @@ NEWS-IEPAtools
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-    #> Last Update: 2021-12-07 11:51:49
+    #> Last Update: 2021-12-30 15:55:44
 
 # IEPAtools v0.1.1.910 (2021-12-07)
 

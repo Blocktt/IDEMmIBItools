@@ -91,21 +91,21 @@ shinyServer(function(input, output, session) {
         }) ## observe~END
 
         # Add "Results" folder if missing
-        boo_Results <- dir.exists(file.path(".", "Results"))
+        boo_Results <- dir.exists(file.path("Results"))
         if(boo_Results==FALSE){
-            dir.create(file.path(".", "Results"))
+            dir.create(file.path("Results"))
         }
 
         # Remove all files in "Results" folder
-        fn_results <- list.files(file.path(".", "Results"), full.names=TRUE)
+        fn_results <- list.files(file.path("Results"), full.names=TRUE)
         file.remove(fn_results)
 
         # Write to "Results" folder - Import as TSV
-        fn_input <- file.path(".", "Results", "data_import.tsv")
+        fn_input <- file.path("Results", "data_import.tsv")
         write.table(df_input, fn_input, row.names=FALSE, col.names=TRUE, sep="\t")
 
         # Copy to "Results" folder - Import "as is"
-        file.copy(input$fn_input$datapath, file.path(".", "Results", input$fn_input$name))
+        file.copy(input$fn_input$datapath, file.path("Results", input$fn_input$name))
 
         return(df_input)
 
@@ -121,10 +121,10 @@ shinyServer(function(input, output, session) {
         shiny::withProgress({
             #
             # Number of increments
-            n_inc <- 7
+            n_inc <- 6
 
             # sink output
-            file_sink <- file(file.path(".", "Results", "results_log.txt"), open = "wt")
+            file_sink <- file(file.path("Results", "results_log.txt"), open = "wt")
             sink(file_sink, type = "output", append = TRUE)
             sink(file_sink, type = "message", append = TRUE)
             # Log
@@ -140,7 +140,7 @@ shinyServer(function(input, output, session) {
 
             # Read in saved file (known format)
             df_data <- NULL  # set as null for IF QC check prior to import
-            fn_input <- file.path(".", "Results", "data_import.tsv")
+            fn_input <- file.path("Results", "data_import.tsv")
             df_data <- read.delim(fn_input, stringsAsFactors = FALSE, sep="\t")
 
             # QC, FAIL if TRUE
@@ -231,7 +231,7 @@ shinyServer(function(input, output, session) {
             message(paste0("Chosen IBI from Shiny app = ", input$MMI))
 
             # Save
-            fn_metval <- file.path(".", "Results", "results_metval.csv")
+            fn_metval <- file.path("Results", "results_metval.csv")
             write.csv(df_metval, fn_metval, row.names = FALSE)
 
             # QC - upper case Index.Name
@@ -259,14 +259,14 @@ shinyServer(function(input, output, session) {
                                       , col_ni_total = "ni_total")
 
             # Save
-            fn_metsc <- file.path(".", "Results", "results_metsc.csv")
+            fn_metsc <- file.path("Results", "results_metsc.csv")
             write.csv(df_metsc, fn_metsc, row.names = FALSE)
 
             # Data Explorer requires df_metsc
             map_data$df_metsc <- df_metsc
 
             # Increment the progress bar, and update the detail text.
-            incProgress(1/n_inc, detail = "Create, summary report (~ 20 - 40 sec)")
+            # incProgress(1/n_inc, detail = "Create, summary report (~ 20 - 40 sec)")
             Sys.sleep(0.75)
 
             # Summary Report ####
@@ -287,10 +287,10 @@ shinyServer(function(input, output, session) {
             # Save Results ####
 
             # Create zip file
-            fn_4zip <- list.files(path = file.path(".", "Results")
+            fn_4zip <- list.files(path = file.path("Results")
                                   , pattern = "^results_"
                                   , full.names = TRUE)
-            zip(file.path(".", "Results", "results.zip"), fn_4zip)
+            zip(file.path("Results", "results.zip"), fn_4zip)
 
             #zip::zipr(file.path(".", "Results", "results.zip"), fn_4zip) # used because regular utils::zip wasn't working
             # enable download button
@@ -313,7 +313,7 @@ shinyServer(function(input, output, session) {
             paste(input$MMI, "_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".zip", sep = "")
         },
         content = function(fname) {##content~START
-            file.copy(file.path(".", "Results", "results.zip"), fname)
+            file.copy(file.path("Results", "results.zip"), fname)
         }##content~END
     )##downloadData~END
 

@@ -29,14 +29,6 @@ function(){
                                  , icon("camera-retro")
                                  , "Take screenshot of map only"
                                  , class = "btn-info")
-               # ,screenshotButton(id = "mymap"
-               #                   , scale = 1
-               #                   , filename = "SiteLocation"
-               #                   , label = "Take Screenshot of Site Location"
-               #                   , timer = 2)
-               # ,screenshotButton(filename = "SiteLocation"
-               #                   , scale = 1
-               #                   , label = "Take Screenshot of Site Location")
                ,leafletOutput("mymap", height = "85vh")
 
              )##mainPanel.END
