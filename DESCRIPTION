@@ -1,11 +1,10 @@
-Package: SNEPtools
+Package: IEPAtools
 Type: Package
-Title: Used to calculate Southeast New England Coastal Watershed Restoration Program (SNEP) IBI Metrics and scores, and produce output files 
-Version: 0.1.3.900
+Title: Used to calculate Illinois EPA IBI metrics and scores, and produce output files 
+Version: 0.1.1.9200
 Authors@R: c(
   person("Ben", "Block", email="Ben.Block@tetratech.com", role=c("cre", "aut")),
-  person("Erik W.","Leppo", role="aut"),
-  person("Jen", "Stamp", role= "aut"))
+  person("Erik W.","Leppo", role="aut"))
 Maintainer: Ben Block <Ben.Block@tetratech.com>
 Description: Tools to calculate multi-metric index in R and Shiny.
 License: MIT + file LICENSE
@@ -32,4 +31,4 @@ Imports:
   shinythemes,
   capture
 VignetteBuilder: knitr
-URL: https://github.com/Blocktt/SNEPtools
+URL: https://github.com/Blocktt/IEPAtools
