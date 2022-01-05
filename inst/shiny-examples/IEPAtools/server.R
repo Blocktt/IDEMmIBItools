@@ -9,6 +9,23 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
+  # modal dialog ####
+  myModal <- modalDialog(
+    title = "Greetings!"
+    ,paste("Welcome to the IEPA Macroinvertebrate IBI Calculator (v0.1.1.9200)!")
+    ,br()
+    ,paste("IEPAtools was developed to calculate benthic macroinvertebrate metrics"
+           ,"and the Composite F Index of Biotic Integrity (IBI) for lakes in Illinois."
+           ,"This app was developed by Ben Block (Ben.Block@tetratech.com),"
+           ,"with underlying R code written by Erik W. Leppo (Erik.Leppo@tetratech.com)"
+           ,"and Ben Block. Please contact Ben Block should any issues or questions arise.")
+    ,br()
+    ,img(src = "IEPA_logo.png", height = 100)
+    ,easyClose = T)
+
+  # Show the model on start up
+  showModal(myModal)
+
   # Setup ####
 
     # map and plots require df_metsc

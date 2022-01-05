@@ -17,6 +17,11 @@ knitr::opts_chunk$set(
 cat(paste0("Last Update: ",Sys.time()))
 ```
 
+IEPAtools v0.1.1.9200 (2022-01-05)
+================
+
+* Added modal for app at launch
+
 IEPAtools v0.1.0.900 (2022-01-03)
 ================
 
