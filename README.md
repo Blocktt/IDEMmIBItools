@@ -8,23 +8,22 @@ A shiny app used to calculate IBI scores for given lake sites using benthic macr
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Blocktt/IEPAtools/graphs/commit-activity)
 [![GitHub
-license](https://img.shields.io/github/license/Blocktt/IEPAtools)](https://github.com/Blocktt/MassIBItools/blob/master/LICENSE)
+license](https://img.shields.io/github/license/Blocktt/IEPAtools)](https://github.com/Blocktt/IEPAtools/blob/master/LICENSE)
 [![GitHub
-issues](https://img.shields.io/github/issues-raw/Blocktt/IEPAtools)](https://github.com/Blocktt/MassIBItools/issues)
+issues](https://img.shields.io/github/issues-raw/Blocktt/IEPAtools)](https://github.com/Blocktt/IEPAtools/issues)
 [![Github all
-releases](https://img.shields.io/github/downloads/Blocktt/IEPAtools/total)](https://github.com/Blocktt/MassIBItools/releases)
+releases](https://img.shields.io/github/downloads/Blocktt/IEPAtools/total)](https://github.com/Blocktt/IEPAtools/releases)
 
 ## Installation
 
 ``` r
 library(devtools)  #install if needed
-Sys.setenv("TAR" = "internal")  # needed for R v3.6.0
 install_github("Blocktt/IEPAtools", force=TRUE, build_vignettes=TRUE)
 ```
 
 ## Purpose
 
-Functions to aid the Illinois EPA in bioassessment and IBI scoring using their lake macroinvertebrate index. Program uses Erik Leppo's BioMonTools for calculations (https://github.com/leppott/BioMonTools). 
+Functions to aid the Illinois EPA in bioassessment and IBI scoring using their lake macroinvertebrate index. The program uses Erik Leppo's BioMonTools for calculations (https://github.com/leppott/BioMonTools). 
 
 ## Status
 
@@ -32,7 +31,7 @@ In development.
 
 ## Usage
 
-A Shiny app purpose built for IEPA to run IBI metric scoring. 
+A Shiny app purpose-built for IEPA to run IBI metric scoring. 
 
 ## Documentation
 
